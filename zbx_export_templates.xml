@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-04-13T15:09:30Z</date>
+    <groups>
+        <group>
+            <name>Linux servers</name>
+        </group>
+        <group>
+            <name>Templates/Applications</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template App IPSEC VPN Strongswan New</template>
+            <name>Template App IPSEC VPN Strongswan New</name>
+            <description>This template monitors existing ipsec connections (strongswan)</description>
+            <groups>
+                <group>
+                    <name>Linux servers</name>
+                </group>
+                <group>
+                    <name>Templates/Applications</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>IPSEC</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Data</name>
+                    <key>ipsec.monitor</key>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>IPSEC</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>IPSEC discovery</name>
+                    <key>ipsec.discover</key>
+                    <delay>300s</delay>
+                    <lifetime>3600s</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Private endpoint of {#TUNNEL} reachable</name>
+                            <key>ipsec.reachable[{#REMOTE_PINGABLE_ENDPOINT},{#LOCAL_PINGABLE_ENDPOINT}]</key>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{sum(#5)}=0</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>{last()}=1</recovery_expression>
+                                    <name>Private endpoint {#REMOTE_PINGABLE_ENDPOINT} is not reachable on {HOST.NAME} for {#TUNNEL}</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Public endpoint of {#TUNNEL} reachable</name>
+                            <key>ipsec.reachable[{#REMOTE_PUBLIC_IP},{#LOCAL_PUBLIC_IP}]</key>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{sum(#5)}=0</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>{last()}=1</recovery_expression>
+                                    <name>Public endpoint {#REMOTE_PINGABLE_ENDPOINT} is not reachable on {HOST.NAME} for {#TUNNEL}</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Private endpoint of {#TUNNEL} rtt</name>
+                            <key>ipsec.rtt[{#REMOTE_PINGABLE_ENDPOINT},{#LOCAL_PINGABLE_ENDPOINT}]</key>
+                            <value_type>FLOAT</value_type>
+                            <units>ms</units>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{avg(#5)}&gt;500</expression>
+                                    <recovery_mode>NONE</recovery_mode>
+                                    <name>RTT to private endpoint {#REMOTE_PINGABLE_ENDPOINT} is too high on {HOST.NAME} for {#TUNNEL}</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Public endpoint of {#TUNNEL} rtt</name>
+                            <key>ipsec.rtt[{#REMOTE_PUBLIC_IP},{#LOCAL_PUBLIC_IP}]</key>
+                            <value_type>FLOAT</value_type>
+                            <units>ms</units>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{avg(#5)}&gt;500</expression>
+                                    <recovery_mode>NONE</recovery_mode>
+                                    <name>RTT to public endpoint {#REMOTE_PUBLIC_IP} is too high on {HOST.NAME} for {#TUNNEL}</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Avg BytesIn 24hr {#TUNNEL}</name>
+                            <type>CALCULATED</type>
+                            <key>ipsec.tunnel.bytesin.avg.24hr[{#TUNNEL}]</key>
+                            <units>B</units>
+                            <params>avg(&quot;ipsec.tunnel.bytesin[{#TUNNEL}]&quot;,86400)</params>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Sum BytesIn 24hr {#TUNNEL}</name>
+                            <type>CALCULATED</type>
+                            <key>ipsec.tunnel.bytesin.sum.24hr[{#TUNNEL}]</key>
+                            <units>B</units>
+                            <params>sum(&quot;ipsec.tunnel.bytesin[{#TUNNEL}]&quot;,86400)</params>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tunnel BytesIn [{#TUNNEL}]</name>
+                            <type>DEPENDENT</type>
+                            <key>ipsec.tunnel.bytesin[{#TUNNEL}]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.BytesIn</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipsec.tunnel[{#TUNNEL}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Avg BytesOut 24hr {#TUNNEL}</name>
+                            <type>CALCULATED</type>
+                            <key>ipsec.tunnel.bytesout.avg.24hr[{#TUNNEL}]</key>
+                            <units>B</units>
+                            <params>avg(&quot;ipsec.tunnel.bytesout[{#TUNNEL}]&quot;,86400)</params>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Sum BytesOut 24hr {#TUNNEL}</name>
+                            <type>CALCULATED</type>
+                            <key>ipsec.tunnel.bytesout.sum.24hr[{#TUNNEL}]</key>
+                            <units>B</units>
+                            <params>sum(&quot;ipsec.tunnel.bytesout[{#TUNNEL}]&quot;,86400)</params>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tunnel BytesOut [{#TUNNEL}]</name>
+                            <type>DEPENDENT</type>
+                            <key>ipsec.tunnel.bytesout[{#TUNNEL}]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.BytesOut</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipsec.tunnel[{#TUNNEL}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tunnel Count [{#TUNNEL}]</name>
+                            <type>DEPENDENT</type>
+                            <key>ipsec.tunnel.count[{#TUNNEL}]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.Count</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipsec.tunnel[{#TUNNEL}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;1</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>{avg(#5)}&lt;=1</recovery_expression>
+                                    <name>More than one tunnel {#TUNNEL} installed</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{sum(#3)}=0</expression>
+                                    <name>Tunnel {#TUNNEL} is NOT installed</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Tunnel [{#TUNNEL}]</name>
+                            <type>DEPENDENT</type>
+                            <key>ipsec.tunnel[{#TUNNEL}]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>IPSEC</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.{#TUNNEL}</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipsec.monitor</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template App IPSEC VPN Strongswan New:ipsec.tunnel.bytesin[{#TUNNEL}].sum(24h)}&lt;20000000 and {Template App IPSEC VPN Strongswan New:ipsec.tunnel.bytesout[{#TUNNEL}].sum(24h)}&lt;20000000</expression>
+                            <name>Unused tunnel {#TUNNEL}</name>
+                            <priority>INFO</priority>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$RTT_TIME_ERR}</macro>
+                    <value>800</value>
+                </macro>
+                <macro>
+                    <macro>{$RTT_TIME_WARN}</macro>
+                    <value>500</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
