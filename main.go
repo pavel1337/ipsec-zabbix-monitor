@@ -108,6 +108,7 @@ func (sa *StatusAll) monitor() {
 func (sa *StatusAll) discover() {
 	type tunnel struct {
 		Name                  string `json:"{#TUNNEL}"`
+		NameOriginal          string `json:"{#TUNNEL_NAME}"`
 		LocalIp               string `json:"{#LOCAL_PUBLIC_IP}"`
 		RemoteIp              string `json:"{#REMOTE_PUBLIC_IP}"`
 		LocalSubnet           string `json:"{#LOCAL_INTERNAL_SUBNET}"`
@@ -125,6 +126,7 @@ func (sa *StatusAll) discover() {
 			for _, l := range v.LocalSubnets {
 				t := tunnel{}
 				t.Name = replaceHyphens(v.Name)
+				t.NameOriginal = v.Name
 				t.LocalIp = v.LocalIp
 				t.LocalSubnet = l
 				t.RemoteIp = v.RemoteIp

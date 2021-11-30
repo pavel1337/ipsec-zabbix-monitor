@@ -11,6 +11,7 @@ with ```-a discover``` flag:
   "data": [
     {
       "{#TUNNEL}": "tunnel_1",
+      "{#TUNNEL_NAME}": "tunnel-1",
       "{#LOCAL_PUBLIC_IP}": "1.1.1.1",
       "{#REMOTE_PUBLIC_IP}": "8.8.8.8",
       "{#LOCAL_INTERNAL_SUBNET}": "10.1.1.1/32",
@@ -20,6 +21,7 @@ with ```-a discover``` flag:
     },
     {
       "{#TUNNEL}": "tunnel_2",
+      "{#TUNNEL_NAME}": "tunnel-2",
       "{#LOCAL_PUBLIC_IP}": "1.11.1.1",
       "{#REMOTE_PUBLIC_IP}": "8.1.8.8",
       "{#LOCAL_INTERNAL_SUBNET}": "10.11.1.1/32",
